@@ -13,9 +13,6 @@
 #include "rtv1.h"
 #include <vector_math.h>
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
-
 
 int main(int argc, char *args[]) {
     SDL_Window *window = NULL;
@@ -47,8 +44,24 @@ int main(int argc, char *args[]) {
 
     //SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, SDL_ALPHA_OPAQUE);;
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, SDL_ALPHA_OPAQUE);
     SDL_RenderDrawPoint(renderer, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+    SDL_RenderPresent(renderer);
+
+    for (int x  = SCREEN_WIDTH; x >= 0; x--) {
+        for (int y  = 0; y < SCREEN_HEIGHT; y++) {
+            float r = (float) x / (float) SCREEN_WIDTH;
+            float g = (float) y / (float) SCREEN_HEIGHT;
+            float b = 1.0;
+
+            uint8_t ir = (uint8_t) (255.9 * r);
+            uint8_t ig = (uint8_t) (255.9 * g);
+            uint8_t ib = (uint8_t) (255.9 * b);
+
+            SDL_SetRenderDrawColor(renderer, ir,  ig,  ib, SDL_ALPHA_OPAQUE);
+            SDL_RenderDrawPoint(renderer, x, y);
+        }
+    }
     SDL_RenderPresent(renderer);
 
     SDL_Event event;

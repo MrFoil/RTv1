@@ -15,9 +15,10 @@
 # include "vector_math.h"
 # include <SDL2/SDL.h>
 # include <math.h>
+# include <stdint.h>
 
-# define WIDTH 640
-# define HEIGHT 640
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 
 enum KeyPressSurfaces
 {
