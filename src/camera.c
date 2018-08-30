@@ -27,7 +27,7 @@ t_mat4		look_at(t_vec3 eye, t_vec3 target, t_vec3 up)
 	r.y_axis = vec4(s.y, u.y, f.y, 0);
 	r.z_axis = vec4(s.z, u.z, f.z, 0);
 	r.w_axis = vec4(0, 0, 0, 1);
-	t = create_translation(vec3(-eye.x, -eye.y, -eye.z));
+	t = create_translation(new_vec(-eye.x, -eye.y, -eye.z));
 	return (mat4_mat4_multiply(r, t));
 }
 

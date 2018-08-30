@@ -12,7 +12,7 @@
 
 #include "rtv1.h"
 #include <vector_math.h>
-
+#include <stdio.h>
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
@@ -24,7 +24,7 @@ int main(int argc, char *args[]) {
 
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        fprintf(stderr, "could not initialize sdl2: %s\n", SDL_GetError());
+        printf("%s%s\n", "could not initialize sdl2: %s\n", SDL_GetError());
         return 1;
     }
 
@@ -47,11 +47,25 @@ int main(int argc, char *args[]) {
 
     //SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, SDL_ALPHA_OPAQUE);;
-    SDL_RenderDrawPoint(renderer, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
-    SDL_RenderPresent(renderer);
 
     SDL_Event event;
+
+    int nx = 640;
+    int ny = 480;
+
+    for (int j = ny - 1; j >= 0 ; j--) {
+        for (int i = 0; i < nx; i++) {
+            t_vec3 color = new_vec((double) i / (double) nx, (double) j / (double) ny, 0.7);
+
+            t_vec3 draw = color.mult_scalar(color, (int)255.99);
+
+            SDL_SetRenderDrawColor(renderer, draw.x, draw.y, draw.z, SDL_ALPHA_OPAQUE);
+            SDL_RenderDrawPoint(renderer, i, j);
+        }
+	}
+
+    SDL_RenderPresent(renderer);
+
     int quit = 0;
 
     while (!quit) {
@@ -80,7 +94,7 @@ int main(int argc, char *args[]) {
 
     }
 
-    SDL_Delay(2000);
+    SDL_Delay(0);
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
