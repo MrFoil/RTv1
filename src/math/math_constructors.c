@@ -20,18 +20,15 @@ t_vec3		new_vec(double x, double y, double z)
 	v.y = y;
 	v.z = z;
 
-	v.division = &vec_division;
-	v.mult = &vec_mult;
-	v.plus = &vec_plus;
-	v.minus = &vec_minus;
-	v.division_scalar = &vec_division_scalar;
-	v.mult_scalar = &vec_mult_scalar;
-	v.cross = &cross_vec3;
-	v.normalize = &normalize_vec3;
-	v.subtract = &subtract_vec3;
-	v.dot = &dot_vec;
-	v.length = &vec_length;
 	return (v);
+}
+
+t_ray		new_ray(t_vec3 v1, t_vec3 v2){
+	t_ray ray;
+
+	ray.A = v1;
+	ray.B = v2;
+	return (ray);
 }
 
 t_vec4		vec4(double x, double y, double z, double w)

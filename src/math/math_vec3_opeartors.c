@@ -53,7 +53,7 @@ int         vec_length(t_vec3 vec)
     return ((int)dot_vec(vec, vec));
 }
 
-t_vec3      vec_division_scalar(t_vec3 vec, int scalar)
+t_vec3      vec_division_scalar(t_vec3 vec, double scalar)
 {
 	if (scalar == 0)
 		return vec;
@@ -65,7 +65,7 @@ t_vec3      vec_division_scalar(t_vec3 vec, int scalar)
     return (v);
 }
 
-t_vec3      vec_mult_scalar(t_vec3 vec, int scalar)
+t_vec3      vec_mult_scalar(t_vec3 vec, double scalar)
 {
     t_vec3 v;
 

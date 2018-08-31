@@ -13,9 +13,76 @@
 #include "rtv1.h"
 #include <vector_math.h>
 #include <stdio.h>
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#include <stdbool.h>
 
+#define SCREEN_WIDTH 600
+#define SCREEN_HEIGHT 300
+
+
+double	hit_sphere(const t_vec3 center, double radius, const t_ray ray){
+	t_vec3 oc = vec_minus(ray.A, center);
+	// dot(B,B) + 2 * dot(B, A-C) + dot(A-C, A-C) - R*R = 0;
+	double a = dot_vec(ray.B, ray.B);
+	double b = 2.0 * dot_vec(oc, ray.B);
+	double c = dot_vec(oc, oc) - radius * radius;
+	double discriminant = b*b - 4 * a * c;
+	if(discriminant < 0){
+		return (-1.0);
+	} else{
+		return ((-b - sqrt(discriminant)) / (2.0*a));
+	}
+}
+
+t_vec3	color(const t_ray r)
+{
+	double  t;
+    t_vec3  unit_direction;
+
+	unit_direction = unit_vector(r.B);
+	t = .5 * (unit_direction.y + 1.0);
+	return vec_plus(vec_mult_scalar(new_vec(1.0, 1.0, 1.0), (1.0 - t)), vec_mult_scalar(new_vec(0.5, 0.7, 1.0), t));
+}
+
+void	draw_scene(SDL_Renderer *renderer){
+	int nx = SCREEN_WIDTH;
+	int ny = SCREEN_HEIGHT;
+
+
+	/*Camera*/
+	t_vec3 lower_left_corner = new_vec(-2, -1, -1);
+	t_vec3 horizontal = new_vec(4, .0, .0);
+	t_vec3 vertical = new_vec(.0, 2, .0);
+	t_vec3 origin = new_vec(.0, .0, .0); /*"EYE" camera position*/
+	t_vec3 col;
+
+	for (int j = ny - 1; j >= 0 ; j--) {
+		for (int i = 0; i < nx; i++) {
+			double u = (double) i / (double) nx;
+			double v = (double) j / (double) ny;
+			t_ray ray = new_ray(origin, // A
+					vec_plus(vec_plus(lower_left_corner,vec_mult_scalar(horizontal, u)), vec_mult_scalar(vertical, v))); /* B = lover_left_corner + u*horizontal + v*vertical */
+			t_vec3	center = new_vec(.0, .0 , -1); // Sphere center
+			double	t = hit_sphere(center, 0.5, ray);
+			if (t > 0.0)
+			{
+				t_vec3 temp = point_at_parameter(ray.A, ray.B, t);
+				t_vec3 temp1 = vec_minus(temp, center);
+				t_vec3 N = unit_vector(temp1); // Нормаль для текущей точки
+				col = vec_mult_scalar(new_vec(N.x + 1, N.y + 1, N.z + 1), 0.5);
+			}
+			else
+			{
+				col = color(ray);
+			}
+
+			t_vec3 draw = vec_mult_scalar(col, (int)255.99);
+
+			SDL_SetRenderDrawColor(renderer, draw.x, draw.y, draw.z, SDL_ALPHA_OPAQUE);
+			SDL_RenderDrawPoint(renderer, i, j);
+		}
+	}
+
+}
 
 int main(int argc, char *args[]) {
     SDL_Window *window = NULL;
@@ -50,19 +117,7 @@ int main(int argc, char *args[]) {
 
     SDL_Event event;
 
-    int nx = 640;
-    int ny = 480;
-
-    for (int j = ny - 1; j >= 0 ; j--) {
-        for (int i = 0; i < nx; i++) {
-            t_vec3 color = new_vec((double) i / (double) nx, (double) j / (double) ny, 0.7);
-
-            t_vec3 draw = color.mult_scalar(color, (int)255.99);
-
-            SDL_SetRenderDrawColor(renderer, draw.x, draw.y, draw.z, SDL_ALPHA_OPAQUE);
-            SDL_RenderDrawPoint(renderer, i, j);
-        }
-	}
+	draw_scene(renderer);
 
     SDL_RenderPresent(renderer);
 

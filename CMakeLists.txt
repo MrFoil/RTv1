@@ -22,7 +22,7 @@ set(SOURCE_FILES src/main.c includes/rtv1.h
         src/math/math_transformations.c
         src/camera.c
         src/vec_tools.c
-        src/primitives.c )
+        src/primitives.c src/math/ray.c)
 
 add_executable(RTv1 ${SOURCE_FILES})
 
