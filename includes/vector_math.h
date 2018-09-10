@@ -96,7 +96,7 @@ t_vec3      	vec_plus(t_vec3 vec1, t_vec3 vec2);
 t_vec3      	vec_mult_scalar(t_vec3 vec, double scalar);
 t_vec3      	vec_division_scalar(t_vec3 vec, double scalar);
 double 			dot_vec(t_vec3 v1, t_vec3 v2);
-int				vec_length(t_vec3 vec);
+float				vec_length(t_vec3 vec);
 t_vec3			unit_vector(t_vec3 v);
 
 
