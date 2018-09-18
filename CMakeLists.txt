@@ -83,7 +83,7 @@ set(SOURCE_FILES src/main.c includes/rtv1.h
         src/math/math_transformations.c
         src/camera.c
         src/vec_tools.c
-        src/primitives.c src/math/ray.c src/unsorted.c includes/objects.h)
+        src/primitives.c src/math/ray.c)
 
 add_executable(RTv1 ${SOURCE_FILES} ${LIBFT_FILES})
 
@@ -93,7 +93,7 @@ endif ()
 
 if (UNIX)
 
-    find_package(Library REQUIRED)
+    find_package(SDL2 REQUIRED)
 
     target_link_libraries(RTv1 -lm -lSDL2)
 endif()
