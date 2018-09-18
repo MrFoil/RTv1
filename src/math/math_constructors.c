@@ -12,6 +12,17 @@
 
 #include <vector_math.h>
 
+t_camera new_camera(t_vec3 lower_left_corner, t_vec3 horizontal, t_vec3 vertical, t_vec3 origin) {
+	t_camera camera;
+
+	camera.lower_left_corner = lower_left_corner;
+	camera.horizontal = horizontal;
+	camera.vertical = vertical;
+	camera.origin = origin;
+
+	return (camera);
+}
+
 t_vec3		new_vec(double x, double y, double z)
 {
 	t_vec3		v;
@@ -40,15 +51,4 @@ t_vec4		vec4(double x, double y, double z, double w)
 	v.z = z;
 	v.w = w;
 	return (v);
-}
-
-t_mat4		new_mat4(void)
-{
-    t_mat4 m;
-
-    m.x_axis = vec4(1, 0, 0, 0);
-    m.y_axis = vec4(0, 1, 0, 0);
-    m.z_axis = vec4(0, 0, 1, 0);
-    m.w_axis = vec4(0, 0, 0, 1);
-    return (m);
 }

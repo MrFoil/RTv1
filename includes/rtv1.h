@@ -15,6 +15,7 @@
 # include "vector_math.h"
 # include <SDL2/SDL.h>
 # include <math.h>
+# include "libft.h"
 
 # define WIDTH 640
 # define HEIGHT 640
@@ -28,7 +29,5 @@ enum KeyPressSurfaces
 	KEY_PRESS_SURFACE_RIGHT,
 	KEY_PRESS_SURFACE_TOTAL
 };
-
-float sdSphere(t_vec4 vec, float s);
 
 #endif

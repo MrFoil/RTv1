@@ -13,9 +13,10 @@
 #ifndef FD_F_MATH_H
 # define FD_F_MATH_H
 
+# include "libft.h"
 # include <math.h>
 # include <stdbool.h>
-
+# include "rtv1.h"
 # define ALPHA 5.2
 # define RAD (ALPHA / (180 / 3.14))
 
@@ -26,11 +27,23 @@ typedef struct	s_vec3
 	double	z;
 }				t_vec3;
 
+typedef struct s_sphere {
+	t_vec3 center;
+	double radius;
+} t_sphere;
+
+typedef struct s_camera {
+	struct s_vec3 lower_left_corner;
+	struct s_vec3 horizontal;
+	struct s_vec3 vertical;
+	struct s_vec3 origin;
+} t_camera;
+
 typedef struct	s_hit_record
 {
 	double			t;
-	struct s_vec3	point;
-	struct s_vec3	normal;
+	t_vec3 point;
+	t_vec3 normal;
 }				t_hit_record;
 
 typedef struct	s_ray
@@ -38,12 +51,6 @@ typedef struct	s_ray
 	struct s_vec3	A;
 	struct s_vec3	B;
 }				t_ray;
-
-typedef struct	s_sphere
-{
-	struct s_vec3	center;
-	double			radius;
-}				t_sphere;
 
 typedef struct	s_vec4
 {
@@ -59,35 +66,37 @@ typedef struct	s_point
 	t_vec3		rgb;
 }				t_point;
 
-typedef struct	s_mat3
-{
-	t_vec3 x_axis;
-	t_vec3 y_axis;
-	t_vec3 z_axis;
-}				t_mat3;
+typedef struct s_object {
+	int type; // 1 == Sphere, 2 == Rectangle
+	struct s_vec3 pos;
+	double width;
+	double height;
+	double radius;
+	struct s_vec3 color;
+	bool visible;
+} t_object;
 
-typedef struct	s_mat4
-{
-	t_vec4 x_axis;
-	t_vec4 y_axis;
-	t_vec4 z_axis;
-	t_vec4 w_axis;
-}				t_mat4;
+
+//typedef struct	s_mat3
+//{
+//	t_vec3 x_axis;
+//	t_vec3 y_axis;
+//	t_vec3 z_axis;
+//}				t_mat3;
+//
+//typedef struct	s_mat4
+//{
+//	t_vec4 x_axis;
+//	t_vec4 y_axis;
+//	t_vec4 z_axis;
+//	t_vec4 w_axis;
+//}				t_mat4;
 
 t_vec3			new_vec(double x, double y, double z);
 t_vec4			vec4(double x, double y, double z, double w);
 double			dot_vec4(t_vec4 v1, t_vec4 v2);
 t_vec3			cross_vec3(t_vec3 v1, t_vec3 v2);
 t_vec3			subtract_vec3(t_vec3 v1, t_vec3 v2);
-t_mat4			new_mat4();
-t_vec3			normalize_vec3(t_vec3 v);
-t_mat4			mat4_mat4_multiply(t_mat4 m1, t_mat4 m2);
-t_vec4			vec4_mat4_multiply(t_vec4 v, t_mat4 m);
-
-t_mat4			create_translation(t_vec3 pos);
-t_mat4			create_x_rotation(double angle);
-t_mat4			create_y_rotation(double angle);
-t_mat4			create_z_rotation(double angle);
 
 t_vec3      	vec_division(t_vec3 vec1, t_vec3 vec2);
 t_vec3      	vec_mult(t_vec3 vec1, t_vec3 vec2);
@@ -99,9 +108,23 @@ double 			dot_vec(t_vec3 v1, t_vec3 v2);
 float				vec_length(t_vec3 vec);
 t_vec3			unit_vector(t_vec3 v);
 
+double sdSphere(t_vec3 vec, float s);
+
 
 t_ray		new_ray(t_vec3 v1, t_vec3 v2);
-t_vec3		point_at_parameter(t_vec3 A, t_vec3 B, double t);
+
+t_vec3 point_at_parameter(t_ray r, double t);
+
+t_camera new_camera(t_vec3 lower_left_corner, t_vec3 horizontal, t_vec3 vertical, t_vec3 origin);
+
+t_ray get_ray(t_camera c, double u, double v);
+
+bool list_hit(t_ray ray, double d_min, double d_max, t_hit_record **rec, t_list *list);
+
+t_sphere *new_sphere(t_vec3 pos, double radius);
+
+
+
 
 
 

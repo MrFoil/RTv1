@@ -11,12 +11,13 @@
 /* ************************************************************************** */
 
 #include "rtv1.h"
-#include <vector_math.h>
+#include "vector_math.h"
 #include <stdio.h>
-#include <stdbool.h>
+#include <float.h>
 
-#define SCREEN_WIDTH 600
-#define SCREEN_HEIGHT 300
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 400
+
 
 
 double	hit_sphere(const t_vec3 center, double radius, const t_ray ray){
@@ -33,48 +34,62 @@ double	hit_sphere(const t_vec3 center, double radius, const t_ray ray){
 	}
 }
 
-t_vec3	color(const t_ray r)
-{
-	double  t;
-    t_vec3  unit_direction;
-
-	unit_direction = unit_vector(r.B);
-	t = .5 * (unit_direction.y + 1.0);
-	return vec_plus(vec_mult_scalar(new_vec(1.0, 1.0, 1.0), (1.0 - t)), vec_mult_scalar(new_vec(0.5, 0.7, 1.0), t));
+t_vec3 color(const t_ray r, t_list *list) {
+	double t;
+	t_vec3 unit_direction;
+	t_hit_record *rec;
+	if (list_hit(r, 0.0, DBL_MAX, &rec, list)) {
+		return (vec_mult_scalar(new_vec(rec->normal.x + 1, rec->normal.y + 1, rec->normal.z + 1), 0.5));
+	} else {
+		unit_direction = unit_vector(r.B);
+		t = .5 * (unit_direction.y + 1.0);
+		return vec_plus(vec_mult_scalar(new_vec(1.0, 1.0, 1.0), (1.0 - t)), vec_mult_scalar(new_vec(0.5, 0.7, 1.0), t));
+	}
 }
 
 void	draw_scene(SDL_Renderer *renderer){
 	int nx = SCREEN_WIDTH;
 	int ny = SCREEN_HEIGHT;
 
+	t_list *list;
+	t_list *list2;
 
-	/*Camera*/
-	t_vec3 lower_left_corner = new_vec(-2, -1, -1);
-	t_vec3 horizontal = new_vec(4, .0, .0);
-	t_vec3 vertical = new_vec(.0, 2, .0);
-	t_vec3 origin = new_vec(.0, .0, .0); /*"EYE" camera position*/
+	t_sphere *sphere;
+	t_sphere *sphere2;
+
+	sphere = new_sphere(new_vec(0, 0, -1), 0.5);
+	sphere2 = new_sphere(new_vec(0, -100.5, -1), 100);
+
+	list = ft_lstnew(sphere, sizeof(t_sphere));
+	list2 = ft_lstnew(sphere2, sizeof(t_sphere));
+	ft_lstadd(&list2, list);
+
+	t_camera camera = new_camera(new_vec(-2, -1, -1),
+								 new_vec(4, .0, .0),
+								 new_vec(.0, 2, .0),
+								 new_vec(.0, .0, .0));
+
 	t_vec3 col;
 
 	for (int j = ny - 1; j >= 0 ; j--) {
 		for (int i = 0; i < nx; i++) {
 			double u = (double) i / (double) nx;
 			double v = (double) j / (double) ny;
-			t_ray ray = new_ray(origin, // A
-					vec_plus(vec_plus(lower_left_corner,vec_mult_scalar(horizontal, u)), vec_mult_scalar(vertical, v))); /* B = lover_left_corner + u*horizontal + v*vertical */
-			t_vec3	center = new_vec(.0, .0 , -1); // Sphere center
-			double	t = hit_sphere(center, 0.5, ray);
-			if (t > 0.0)
-			{
-				t_vec3 temp = point_at_parameter(ray.A, ray.B, t);
-				t_vec3 temp1 = vec_minus(temp, center);
-				t_vec3 N = unit_vector(temp1); // Нормаль для текущей точки
-				col = vec_mult_scalar(new_vec(N.x + 1, N.y + 1, N.z + 1), 0.5);
+
+			t_ray ray = get_ray(camera, u, v); // ray for current coordinates
+/*
+			t_vec3 test = new_vec(u, v, 0);
+			double testFormulaSphere = sdSphere(test, 0.7);
+			printf("%f\n", testFormulaSphere);
+			if (testFormulaSphere < 0){
+				col = new_vec(1, 0, 0);
 			}
 			else
 			{
-				col = color(ray);
-			}
-
+				col = new_vec(u, v, 0.5);
+			}*/
+			/*t_vec3 p = point_at_parameter(ray, 2.0);*/
+			col = color(ray, list);
 			t_vec3 draw = vec_mult_scalar(col, (int)255.99);
 
 			SDL_SetRenderDrawColor(renderer, draw.x, draw.y, draw.z, SDL_ALPHA_OPAQUE);
@@ -85,6 +100,8 @@ void	draw_scene(SDL_Renderer *renderer){
 }
 
 int main(int argc, char *args[]) {
+	(void) argc;
+	(void) args;
     SDL_Window *window = NULL;
     SDL_Surface *screenSurface = NULL;
     SDL_Renderer *renderer = NULL;

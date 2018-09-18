@@ -12,29 +12,36 @@
 
 #include "vector_math.h"
 
-t_mat4		look_at(t_vec3 eye, t_vec3 target, t_vec3 up)
-{
-	t_mat4	t;
-	t_mat4	r;
-	t_vec3	f;
-	t_vec3	s;
-	t_vec3	u;
+//t_mat4		look_at(t_vec3 eye, t_vec3 target, t_vec3 up)
+//{
+//	t_mat4	t;
+//	t_mat4	r;
+//	t_vec3	f;
+//	t_vec3	s;
+//	t_vec3	u;
+//
+//	f = normalize_vec3(subtract_vec3(target, eye));
+//	s = normalize_vec3(cross_vec3(f, up));
+//	u = cross_vec3(s, f);
+//	r.x_axis = vec4(s.x, u.x, f.x, 0);
+//	r.y_axis = vec4(s.y, u.y, f.y, 0);
+//	r.z_axis = vec4(s.z, u.z, f.z, 0);
+//	r.w_axis = vec4(0, 0, 0, 1);
+//	t = create_translation(new_vec(-eye.x, -eye.y, -eye.z));
+//	return (mat4_mat4_multiply(r, t));
+//}
+//
+//t_mat4		camera(t_vec3 eye, t_vec3 tar, t_vec3 up)
+//{
+//	t_mat4	cam;
+//
+//	cam = look_at(eye, tar, up);
+//	return (cam);
+//}
 
-	f = normalize_vec3(subtract_vec3(target, eye));
-	s = normalize_vec3(cross_vec3(f, up));
-	u = cross_vec3(s, f);
-	r.x_axis = vec4(s.x, u.x, f.x, 0);
-	r.y_axis = vec4(s.y, u.y, f.y, 0);
-	r.z_axis = vec4(s.z, u.z, f.z, 0);
-	r.w_axis = vec4(0, 0, 0, 1);
-	t = create_translation(new_vec(-eye.x, -eye.y, -eye.z));
-	return (mat4_mat4_multiply(r, t));
-}
-
-t_mat4		camera(t_vec3 eye, t_vec3 tar, t_vec3 up)
-{
-	t_mat4	cam;
-
-	cam = look_at(eye, tar, up);
-	return (cam);
+t_ray get_ray(t_camera c, double u, double v) {
+	t_vec3 a = c.origin;
+	t_vec3 b = vec_plus(vec_plus(c.lower_left_corner, vec_mult_scalar(c.horizontal, u)),
+						vec_mult_scalar(c.vertical, v));
+	return (new_ray(a, b));
 }
