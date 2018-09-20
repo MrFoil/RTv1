@@ -48,9 +48,9 @@ double dot_vec(t_vec3 v1, t_vec3 v2) {
     return (r);
 }
 
-float         vec_length(t_vec3 vec)
+double         vec_length(t_vec3 vec)
 {
-    return (float)sqrt(dot_vec(vec, vec));
+    return sqrt(dot_vec(vec, vec));
 }
 
 t_vec3      vec_division_scalar(t_vec3 vec, double scalar)

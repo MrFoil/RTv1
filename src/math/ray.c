@@ -12,19 +12,19 @@ bool sphere_hit(const t_ray ray, double t_min, double t_max, t_hit_record *rec, 
 	t_vec3 oc = vec_minus(ray.A, s->center);
 	// dot(B,B) + dot(B, A-C) + dot(A-C, A-C) - R*R = 0;
 	double a = dot_vec(ray.B, ray.B);
-	double b = dot_vec(oc, ray.B);
+	double b =  2.0 * dot_vec(oc, ray.B);
 	double c = dot_vec(oc, oc) - s->radius * s->radius;
-	double discriminant = b * b - a * c;
+	double discriminant = b * b - 4 * a * c;
 	double temp;
 	if (discriminant > 0){
-		temp = (-b - sqrt(b * b - a * c)) / a;
+		temp = (-b - sqrt(discriminant)) / (2 * a);
 		if (temp < t_max && temp > t_min){
 			rec->t = temp;
 			rec->point = point_at_parameter(ray, rec->t);
 			rec->normal = (vec_division_scalar(vec_minus(rec->point, s->center), s->radius));
 			return (true);
 		}
-		temp = (-b + sqrt(b * b - a * c)) / a;
+		temp = (-b + sqrt(discriminant)) / (2 * a);
 		if (temp < t_max && temp > t_min){
 			rec->t = temp;
 			rec->point = point_at_parameter(ray, rec->t);

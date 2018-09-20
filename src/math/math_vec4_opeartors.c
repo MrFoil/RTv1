@@ -28,7 +28,7 @@ int vec4_length(t_vec4 vec) {
 
     l = sqrt(pow(vec.x, 2) + pow(vec.y, 2) + pow(vec.z, 2) + pow(vec.w, 2));
     //--or
-    l = dot_vec4(vec, vec);
+    l = sqrt(dot_vec4(vec, vec));
     //its the same
     return ((int) l);
 }
