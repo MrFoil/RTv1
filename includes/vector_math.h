@@ -39,11 +39,19 @@ typedef struct s_camera {
 	struct s_vec3 origin;
 } t_camera;
 
+typedef struct	s_material
+{
+	int		material_type;
+	t_vec3	material_albedo;
+}				t_material;
+
 typedef struct	s_hit_record
 {
 	double			t;
-	t_vec3 point;
-	t_vec3 normal;
+	t_vec3			point;
+	t_vec3			normal;
+	t_material		*mat_ptr;
+
 }				t_hit_record;
 
 typedef struct	s_ray

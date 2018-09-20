@@ -62,9 +62,6 @@ int main(int argc, char *args[]) {
 
 	draw_scene(renderer);
 
-
-	SDL_RenderPresent(renderer);
-
 	int quit = 0;
 
 	while (!quit) {
@@ -104,7 +101,7 @@ int main(int argc, char *args[]) {
 	t_vec3			unit_direction;
 	t_hit_record	*rec;
 	t_vec3			target;
-	if (list_hit(r, 0.005, DBL_MAX, &rec, list)) {
+	if (list_hit(r, 0.001, DBL_MAX, &rec, list)) {
 		/* | rec.point + rec.normal + random_inUnit_sphere() | */
 		target = vec_plus(vec_plus(rec->point, rec->normal),random_in_unit_sphere());
 		return vec_division_scalar(color(new_ray(rec->point, vec_minus(target, rec->point)), list),0.5);
@@ -115,28 +112,62 @@ int main(int argc, char *args[]) {
 	}
 }
 
+t_vec3	reflect(t_vec3 v, t_vec3 n){
+	return vec_minus(v, vec_mult_scalar(n, 2*dot_vec(v, n)));/*|||| v - 2*dot(v, n) * n ||||*/
+}
+
+bool	lambertian_scatter(t_ray ray, t_hit_record *record, t_vec3 *attenuation, t_ray *scattered){
+	t_vec3	target;
+
+	target = vec_plus(vec_plus(record->point, record->normal),random_in_unit_sphere());
+	*scattered = new_ray(record->point, vec_minus(target, record->point));
+	*attenuation = record->mat_ptr->material_albedo;
+	return (true);
+}
+
+bool	metal_scatter(t_ray ray, t_hit_record *record, t_vec3 *attenuation, t_ray *scattered){
+	t_vec3 reflected;
+
+	reflected = reflect(unit_vector(ray.B), record->normal);
+	*scattered = new_ray(record->point,reflected);
+	*attenuation = record->mat_ptr->material_albedo;
+	return (dot_vec((*scattered).B, record->normal) > 0);
+}
+
+
 void	draw_scene(SDL_Renderer *renderer){
 	int nx = SCREEN_WIDTH;
 	int ny = SCREEN_HEIGHT;
-	int antialiasingX = 20;
+	int antialiasingX = 10;
 
 	t_list *list;
 	t_list *list2;
+	t_list *list3;
+	t_list *list4;
 
 	t_sphere *sphere;
 	t_sphere *sphere2;
+	t_sphere *sphere3;
+	t_sphere *sphere4;
 
 	sphere = new_sphere(new_vec(0, 0, -1), 0.5);
 	sphere2 = new_sphere(new_vec(0, 100.5, -1), 100);
+	sphere3 = new_sphere(new_vec(-1, 0.3, -1.2), 0.3);
+	sphere4 = new_sphere(new_vec(1, 0.3, -1.2), 0.3);
 
 	list = ft_lstnew(sphere, sizeof(t_sphere));
 	list2 = ft_lstnew(sphere2, sizeof(t_sphere));
+	list3 = ft_lstnew(sphere3, sizeof(t_sphere));
+	list4 = ft_lstnew(sphere4, sizeof(t_sphere));
 	ft_lstadd(&list2, list);
+	ft_lstadd(&list3, list->next);
+	ft_lstadd(&list4, list->next->next);
+
 
 	t_camera camera = new_camera(new_vec(-2.0, -1.0, -1.0),/*lower left corner*/
 								 new_vec(4.0, 0.0, 0.0),/*horizontal*/
 								 new_vec(0.0, 2.0, 0.0),/*vertical*/
-								 new_vec(0.0, 0.0, 0.0));/*origin*/
+								 new_vec(0.0, 0.0, 0));/*origin*/
 
 	t_vec3 col;
 
@@ -160,6 +191,7 @@ void	draw_scene(SDL_Renderer *renderer){
 			SDL_SetRenderDrawColor(renderer, draw.x, draw.y, draw.z, SDL_ALPHA_OPAQUE);
 			SDL_RenderDrawPoint(renderer, i, j);
 		}
+		SDL_RenderPresent(renderer);
 	}
 
 }
@@ -172,9 +204,14 @@ double randfrom(double min, double max)
 }
 
 t_vec3		random_in_unit_sphere(){
+	double random_max;
+	double random_min;
+
+	random_max = 0.5;
+	random_min = 0.1;
 	t_vec3 p;
 	do {
-		p = vec_minus(vec_mult_scalar(new_vec(randfrom(0.0, 1.0), randfrom(0.0, 1.0), randfrom(0.0, 1.0)),2.0),new_vec(1, 1, 1));
-	}while(vec_length(p) >= 1.0);
+		p = vec_minus(vec_mult_scalar(new_vec(randfrom(random_min, random_max), randfrom(random_min, random_max), randfrom(random_min, random_max)),2.0),new_vec(1, 1, 1));
+	}while(vec_length(p) >= random_max);
 	return p;
 }
