@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <vector_math.h>
+#include <rtv1.h>
 
 t_camera new_camera(t_vec3 lower_left_corner, t_vec3 horizontal, t_vec3 vertical, t_vec3 origin) {
 	t_camera camera;
@@ -40,15 +40,4 @@ t_ray		new_ray(t_vec3 v1, t_vec3 v2){
 	ray.A = v1;
 	ray.B = v2;
 	return (ray);
-}
-
-t_vec4		vec4(double x, double y, double z, double w)
-{
-	t_vec4		v;
-
-	v.x = x;
-	v.y = y;
-	v.z = z;
-	v.w = w;
-	return (v);
 }

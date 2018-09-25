@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <vector_math.h>
+#include <rtv1.h>
 
 //t_vec4		quick_math(t_vec4 axis, t_mat4 m1, t_vec4 v)
 //{

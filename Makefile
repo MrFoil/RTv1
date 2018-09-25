@@ -19,16 +19,15 @@ LFT = $(D_LFT)$(N_LFT)
 HEADER_FILES = $(D_INC)rtv1.h $(D_INC)vector_math.h
 LIBHEAD = $(D_LFTINC)libft.h
 
-C_FILES =	main.c \
-            math/math_constructors.c \
-            math/math_vec3_opeartors.c \
-            math/math_vec4_opeartors.c \
-            math/math_mat4_operators.c \
-            math/math_transformations.c \
-            camera.c \
-            vec_tools.c \
-            primitives.c math/ray.c
-
+C_FILES =	src/main.c includes/rtv1.h \
+                    includes/vector_math.h \
+                    src/math/math_constructors.c \
+                    src/math/math_vec3_opeartors.c \
+                    src/camera.c \
+                    src/ray.c \
+                    src/material_scatters.c \
+                    src/math/math_utils.c \
+                    src/render_objects/sphere.c src/to_libft/ft_lstadd_end.c
 LIBFT_FILES = ft_memset.c \
               		ft_bzero.c \
               		ft_memcpy.c \
