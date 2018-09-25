@@ -11,6 +11,8 @@ D_SDLINC = $(D_SDL)include
 D_SDLLIB = $(D_SDL)lib
 D_OBJ = ./obj/
 D_OBJ_MATH = $(D_OBJ)math
+D_OBJ_RENDER = $(D_OBJ)render_objects
+D_OBJ_TOLIBFT = $(D_OBJ)to_libft
 
 L_SDL = `$(D_SDL)sdl2-config --cflags --libs`
 
@@ -19,15 +21,14 @@ LFT = $(D_LFT)$(N_LFT)
 HEADER_FILES = $(D_INC)rtv1.h $(D_INC)vector_math.h
 LIBHEAD = $(D_LFTINC)libft.h
 
-C_FILES =	src/main.c includes/rtv1.h \
-                    includes/vector_math.h \
-                    src/math/math_constructors.c \
-                    src/math/math_vec3_opeartors.c \
-                    src/camera.c \
-                    src/ray.c \
-                    src/material_scatters.c \
-                    src/math/math_utils.c \
-                    src/render_objects/sphere.c src/to_libft/ft_lstadd_end.c
+C_FILES =	main.c \
+            math/math_constructors.c \
+            math/math_vec3_opeartors.c \
+            camera.c \
+            ray.c \
+            material_scatters.c \
+            math/math_utils.c \
+            render_objects/sphere.c to_libft/ft_lstadd_end.c
 LIBFT_FILES = ft_memset.c \
               		ft_bzero.c \
               		ft_memcpy.c \
@@ -123,6 +124,8 @@ $(D_SDLLIB):
 $(D_OBJ):
 	@mkdir $(D_OBJ)
 	@mkdir $(D_OBJ_MATH)
+	@mkdir $(D_OBJ_RENDER)
+	@mkdir $(D_OBJ_TOLIBFT)
 	@printf "RTv1:  %-25s$(C_GREEN)[done]$(C_NONE)\n" $@
 
 $(D_OBJ)%.o: $(D_SRC)%.c $(HEADER_FILES)

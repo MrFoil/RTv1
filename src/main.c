@@ -126,7 +126,7 @@ void	add_sphere_to_world(t_sphere *sphere, t_list **world)
 void	draw_scene(SDL_Renderer *renderer){
 	int		nx = WIDTH;
 	int		ny = HEIGHT;
-	int		antialiasingX = 2;
+	int		antialiasingX = 50;
 	t_list	*world;
 
 	world = NULL;
