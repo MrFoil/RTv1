@@ -27,7 +27,7 @@ typedef struct	s_vec3
 	double	z;
 }				t_vec3;
 
-t_vec3			new_vec(double x, double y, double z);
+t_vec3			vec(double x, double y, double z);
 
 t_vec3			cross_vec3(t_vec3 v1, t_vec3 v2);
 t_vec3			subtract_vec3(t_vec3 v1, t_vec3 v2);

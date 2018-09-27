@@ -12,18 +12,7 @@
 
 #include <rtv1.h>
 
-t_camera new_camera(t_vec3 lower_left_corner, t_vec3 horizontal, t_vec3 vertical, t_vec3 origin) {
-	t_camera camera;
-
-	camera.lower_left_corner = lower_left_corner;
-	camera.horizontal = horizontal;
-	camera.vertical = vertical;
-	camera.origin = origin;
-
-	return (camera);
-}
-
-t_vec3		new_vec(double x, double y, double z)
+t_vec3		vec(double x, double y, double z)
 {
 	t_vec3		v;
 

@@ -106,12 +106,12 @@ t_vec3	color_by_material(const t_ray r, t_list *list, int depth)
 		}
 		else
 		{
-			return (new_vec(0, 0, 0));
+			return (vec(0, 0, 0));
 		}
 	} else {
 		unit_direction = unit_vector(r.B);
 		t = .5 * (unit_direction.y + 1.0);
-		return vec_plus(vec_mult_scalar(new_vec(1.0, 1.0, 1.0), (1.0 - t)), vec_mult_scalar(new_vec(0.5, 0.7, 1.0), t));
+		return vec_plus(vec_mult_scalar(vec(1.0, 1.0, 1.0), (1.0 - t)), vec_mult_scalar(vec(0.5, 0.7, 1.0), t));
 	}
 }
 
@@ -124,34 +124,34 @@ void	add_sphere_to_world(t_sphere *sphere, t_list **world)
 }
 
 void	draw_scene(SDL_Renderer *renderer){
-	int		nx = WIDTH;
-	int		ny = HEIGHT;
-	int		antialiasingX = 1;
-	t_list	*world;
+	int			nx;
+	int			ny;
+	t_camera	camera;
+	int			antialiasingX;
+	t_list		*world;
 
 	world = NULL;
 
-	add_sphere_to_world(new_sphere(new_vec(0, 0, -1), 0.5,
-			new_material(0, new_vec(0.1, 0.2, 0.5), "lambertian")), &world);
-	add_sphere_to_world(new_sphere(new_vec(0, 100.5, -1), 100,
-			new_material(0, new_vec(0.8, 0.8, 0.0), "lambertian")), &world);
-	add_sphere_to_world(new_sphere(new_vec(1, 0, -1), 0.5,
-			new_material(0, new_vec(0.8, 0.6, 0.2), "metal")), &world);
-	add_sphere_to_world(new_sphere(new_vec(-1, 0, -1), 0.5,
-			new_material(1.5, new_vec(0, 0, 0), "dielectric")), &world);
-	add_sphere_to_world(new_sphere(new_vec(-1, 0, -1), -0.45,
-			new_material(1.5, new_vec(0, 0, 0), "dielectric")), &world);
+	ny = HEIGHT;
+	nx = WIDTH;
+	antialiasingX = 1;
+	camera = new_camera(vec(0, 0, 2), vec(0, 0, -1), vec(0, 1, 0), 90, (float)nx / (float)ny);
+	float R = cos(M_PI/4);
 
-	t_camera camera = new_camera(new_vec(-2.0, -1.0, -1.0),/*lower left corner*/
-								 new_vec(4.0, 0.0, 0.0),/*horizontal*/
-								 new_vec(0.0, 2.0, 0.0),/*vertical*/
-								 new_vec(0.0, 0.0, 0));/*origin*/
+	add_sphere_to_world(new_sphere(vec(0, 0, -1), 0.5, new_material(0, vec(0.1, 0.2, 0.5), "lambertian")), &world);
+	add_sphere_to_world(new_sphere(vec(0, -100.5, -1), 100, new_material(0, vec(0.8, 0.8, 1), "metal")), &world);
+	add_sphere_to_world(new_sphere(vec(1, 0, -1), 0.5, new_material(0, vec(1, 0.4, 0.6), "metal")), &world);
+	add_sphere_to_world(new_sphere(vec(2, 0, -1), 0.5, new_material(0, vec(0.85, 0.26, 1), "lambertian")), &world);
+	add_sphere_to_world(new_sphere(vec(-1, 0, -1), 0.5, new_material(1.5, vec(1, 0.5, 0.9), "dielectric")), &world);
+	add_sphere_to_world(new_sphere(vec(-1, 0, -1), -0.45, new_material(1.5, vec(0, 0, 0), "dielectric")), &world);
+
+
 
 	t_vec3 col;
 
 	for (int j = ny -1; j >= 0 ; j--) {
 		for (int i = 0; i < nx; i++) {
-			col = new_vec(0,0,0);
+			col = vec(0, 0, 0);
 			for (int k = 0; k < antialiasingX ; k++) {
 				double u = ((double)i + randfrom(0, 1)) / (double)nx;
 				double v = ((double)j + randfrom(0, 1)) / (double)ny;
@@ -159,7 +159,7 @@ void	draw_scene(SDL_Renderer *renderer){
 				col = vec_plus(col,color_by_material(ray, world, 0));
 			}
 			col = vec_division_scalar(col, (double)antialiasingX);
-			col = new_vec(sqrt(col.x), sqrt(col.y), sqrt(col.z));
+			col = vec(sqrt(col.x), sqrt(col.y), sqrt(col.z));
 			t_vec3 draw = vec_mult_scalar(col, 255.99);
 
 			SDL_SetRenderDrawColor(renderer, (Uint8)draw.x, (Uint8)draw.y, (Uint8)draw.z, SDL_ALPHA_OPAQUE);

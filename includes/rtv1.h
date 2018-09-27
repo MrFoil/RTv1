@@ -71,7 +71,7 @@ typedef struct s_sphere {
 }			t_sphere;
 
 t_ray			new_ray(t_vec3 v1, t_vec3 v2);
-t_camera		new_camera(t_vec3 lower_left_corner, t_vec3 horizontal, t_vec3 vertical, t_vec3 origin);
+t_camera		new_camera(t_vec3 lookfrom, t_vec3 lookat, t_vec3 vup, float vfov, float aspect);
 t_sphere		*new_sphere(t_vec3 pos, double radius, t_material material);
 
 bool			sphere_hit(t_ray ray, double t_min, double t_max, t_hit_record *rec, t_sphere *s);

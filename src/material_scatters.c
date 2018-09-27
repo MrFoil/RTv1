@@ -79,7 +79,7 @@ bool	dielectric_scatter(t_ray ray, t_hit_record *record, t_vec3 *attenuation, t_
 	float	reflect_prob;
 
 	reflected = vec_reflect(ray.B, record->normal);
-	*attenuation = new_vec(1.0, 1.0, 1.0);
+	*attenuation = vec(1.0, 1.0, 1.0);
 	if (dot_vec(ray.B, record->normal) > 0)
 	{
 		outward_normal = vec_mult_scalar(record->normal, -1);

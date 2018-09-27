@@ -52,9 +52,9 @@ t_vec3		random_point_in_unit_sphere(){
 	random_min = 0;
 	t_vec3 p;
 	do {
-		p = new_vec(randfrom(random_min, random_max), randfrom(random_min, random_max), randfrom(random_min, random_max));
+		p = vec(randfrom(random_min, random_max), randfrom(random_min, random_max), randfrom(random_min, random_max));
 		p = vec_mult_scalar(p, 2.0);
-		p = vec_minus(p, new_vec(1, 1, 1));
+		p = vec_minus(p, vec(1, 1, 1));
 //		p = vec_minus(vec_mult_scalar(new_vec(randfrom(random_min, random_max), randfrom(random_min, random_max), randfrom(random_min, random_max)),2.0),new_vec(1, 1, 1));
 	}while(dot_vec(p, p) >= random_max);
 	return p;
