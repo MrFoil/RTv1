@@ -126,19 +126,21 @@ void	add_sphere_to_world(t_sphere *sphere, t_list **world)
 void	draw_scene(SDL_Renderer *renderer){
 	int		nx = WIDTH;
 	int		ny = HEIGHT;
-	int		antialiasingX = 50;
+	int		antialiasingX = 1;
 	t_list	*world;
 
 	world = NULL;
 
 	add_sphere_to_world(new_sphere(new_vec(0, 0, -1), 0.5,
-			new_material(new_vec(0.8, 0.3, 0.3), "lambertian")), &world);
+			new_material(0, new_vec(0.1, 0.2, 0.5), "lambertian")), &world);
 	add_sphere_to_world(new_sphere(new_vec(0, 100.5, -1), 100,
-			new_material(new_vec(0.8, 0.8, 0.3), "lambertian")), &world);
-	add_sphere_to_world(new_sphere(new_vec(-1, 0.3, -1.2), 0.3,
-			new_material(new_vec(0.8, 0.6, 0.2), "metal")), &world);
-	add_sphere_to_world(new_sphere(new_vec(1, 0.3, -1.2), 0.3,
-			new_material(new_vec(0.8, 0.8, 0.8), "metal")), &world);
+			new_material(0, new_vec(0.8, 0.8, 0.0), "lambertian")), &world);
+	add_sphere_to_world(new_sphere(new_vec(1, 0, -1), 0.5,
+			new_material(0, new_vec(0.8, 0.6, 0.2), "metal")), &world);
+	add_sphere_to_world(new_sphere(new_vec(-1, 0, -1), 0.5,
+			new_material(1.5, new_vec(0, 0, 0), "dielectric")), &world);
+	add_sphere_to_world(new_sphere(new_vec(-1, 0, -1), -0.45,
+			new_material(1.5, new_vec(0, 0, 0), "dielectric")), &world);
 
 	t_camera camera = new_camera(new_vec(-2.0, -1.0, -1.0),/*lower left corner*/
 								 new_vec(4.0, 0.0, 0.0),/*horizontal*/

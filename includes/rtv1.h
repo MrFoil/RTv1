@@ -50,15 +50,16 @@ typedef struct	s_ray
 
 typedef struct	s_hit_record
 {
-	double			t;
-	t_vec3			point;
-	t_vec3			normal;
-	struct s_material		*mat_ptr;
+	double				t;
+	t_vec3				point;
+	t_vec3				normal;
+	struct s_material	*mat_ptr;
 }			t_hit_record;
 
 typedef struct	s_material
 {
 	t_vec3	albedo;
+	float	ref_index;
 	bool	(*scatter)(t_ray ray, t_hit_record *record, t_vec3 *attenuation, t_ray *scattered);
 }				t_material;
 
@@ -79,10 +80,10 @@ t_vec3			point_at_parameter(t_ray r, double t);
 t_ray			get_ray(t_camera c, double u, double v);
 bool			list_hit(t_ray ray, double d_min, double d_max, t_hit_record **rec, t_list *list);
 t_vec3			random_point_in_unit_sphere();
-t_material		new_material(t_vec3 albedo, char *type);
+t_material		new_material(float reflect, t_vec3 albedo, char *type);
 bool			lambertian_scatter(t_ray ray, t_hit_record *record, t_vec3 *attenuation, t_ray *scattered);
 bool			metal_scatter(t_ray ray, t_hit_record *record, t_vec3 *attenuation, t_ray *scattered);
-
+bool			dielectric_scatter(t_ray ray, t_hit_record *record, t_vec3 *attenuation, t_ray *scattered);
 
 void			ft_lstadd_end(t_list **alst, t_list *new);
 
