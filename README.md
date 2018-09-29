@@ -1,2 +1,4 @@
 # RTv1
-My first Ray Tracer
+
+
+![alt text](https://i.imgur.com/jYd8teY.png "AAx128 R: 2560x1080")
