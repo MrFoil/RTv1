@@ -17,8 +17,8 @@
 # include <math.h>
 # include "libft.h"
 
-# define WIDTH 800
-# define HEIGHT 400
+# define WIDTH 1280
+# define HEIGHT 720
 
 typedef struct	s_material t_material;
 typedef struct	s_ray t_ray;
@@ -78,7 +78,7 @@ bool			sphere_hit(t_ray ray, double t_min, double t_max, t_hit_record *rec, t_sp
 double			randfrom(double min, double max);
 t_vec3			point_at_parameter(t_ray r, double t);
 t_ray			get_ray(t_camera c, double u, double v);
-bool			list_hit(t_ray ray, double d_min, double d_max, t_hit_record **rec, t_list *list);
+bool			list_hit(t_ray ray, double d_min, double d_max, t_hit_record *rec, t_list *list);
 t_vec3			random_point_in_unit_sphere();
 t_material		new_material(float reflect, t_vec3 albedo, char *type);
 bool			lambertian_scatter(t_ray ray, t_hit_record *record, t_vec3 *attenuation, t_ray *scattered);

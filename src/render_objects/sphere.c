@@ -26,18 +26,18 @@ bool sphere_hit(const t_ray ray, double t_min, double t_max, t_hit_record *rec, 
 	if (discriminant > 0){
 		temp = (-b - sqrt(discriminant)) / (2 * a);
 		if (temp < t_max && temp > t_min){
-			rec->t = temp;
-			rec->point = point_at_parameter(ray, rec->t);
-			rec->normal = (vec_division_scalar(vec_minus(rec->point, s->center), s->radius));
-			rec->mat_ptr = &s->material;
+			(*rec).t = temp;
+			(*rec).point = point_at_parameter(ray, (*rec).t);
+			(*rec).normal = (vec_division_scalar(vec_minus((*rec).point, s->center), s->radius));
+			(*rec).mat_ptr = &s->material;
 			return (true);
 		}
 		temp = (-b + sqrt(discriminant)) / (2 * a);
 		if (temp < t_max && temp > t_min){
-			rec->t = temp;
-			rec->point = point_at_parameter(ray, rec->t);
-			rec->normal = (vec_division_scalar(vec_minus(rec->point, s->center), s->radius));
-			rec->mat_ptr = &s->material;
+			(*rec).t = temp;
+			(*rec).point = point_at_parameter(ray, (*rec).t);
+			(*rec).normal = (vec_division_scalar(vec_minus((*rec).point, s->center), s->radius));
+			(*rec).mat_ptr = &s->material;
 			return (true);
 		}
 	}

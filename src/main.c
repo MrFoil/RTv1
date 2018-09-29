@@ -13,7 +13,6 @@
 
 #include "rtv1.h"
 #include <stdio.h>
-#define _XOPEN_SOURCE
 #include <stdlib.h>
 #include <float.h>
 
@@ -24,7 +23,6 @@ int		main(int argc, char *args[]) {
 	(void) args;
 	SDL_Window *window = NULL;
 	SDL_Renderer *renderer = NULL;
-
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		printf("%s%s\n", "could not initialize sdl2: %s\n", SDL_GetError());
@@ -93,13 +91,13 @@ t_vec3	color_by_material(const t_ray r, t_list *list, int depth)
 {
 	double			t;
 	t_vec3			unit_direction;
-	t_hit_record	*rec;
+	t_hit_record	rec;
 	t_vec3			attenuation;
 	t_ray			scattered;
 
 	if (list_hit(r, 0.001, DBL_MAX, &rec, list))
 	{
-		if (depth < 50 && rec->mat_ptr->scatter(r, rec, &attenuation, &scattered))
+		if (depth < 50 && rec.mat_ptr->scatter(r, &rec, &attenuation, &scattered))
 		{
 			/*|(attenuation * color(scattered, list, depth+1))|*/
 			return vec_mult(attenuation, color_by_material(scattered, list, depth + 1));
@@ -134,12 +132,11 @@ void	draw_scene(SDL_Renderer *renderer){
 
 	ny = HEIGHT;
 	nx = WIDTH;
-	antialiasingX = 1;
-	camera = new_camera(vec(0, 0, 2), vec(0, 0, -1), vec(0, 1, 0), 90, (float)nx / (float)ny);
-	float R = cos(M_PI/4);
+	antialiasingX = 8;
+	camera = new_camera(vec(-2, 2, 1), vec(0, 0, -1), vec(0, -1, 0), 60, (float)nx / (float)ny);
 
 	add_sphere_to_world(new_sphere(vec(0, 0, -1), 0.5, new_material(0, vec(0.1, 0.2, 0.5), "lambertian")), &world);
-	add_sphere_to_world(new_sphere(vec(0, -100.5, -1), 100, new_material(0, vec(0.8, 0.8, 1), "metal")), &world);
+	add_sphere_to_world(new_sphere(vec(0, -100.5, -1), 100, new_material(0, vec(0.8, 0.2, 0.5), "metal")), &world);
 	add_sphere_to_world(new_sphere(vec(1, 0, -1), 0.5, new_material(0, vec(1, 0.4, 0.6), "metal")), &world);
 	add_sphere_to_world(new_sphere(vec(2, 0, -1), 0.5, new_material(0, vec(0.85, 0.26, 1), "lambertian")), &world);
 	add_sphere_to_world(new_sphere(vec(-1, 0, -1), 0.5, new_material(1.5, vec(1, 0.5, 0.9), "dielectric")), &world);

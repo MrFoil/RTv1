@@ -5,13 +5,14 @@ if (WIN32)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
+#set(SDL2_PATH ${PROJECT_SOURCE_DIR}/Library/bin)
+
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-set(SDL2_PATH ${PROJECT_SOURCE_DIR}/Library)
+find_package(SDL2 REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR}/Library/include)
 
-find_package(SDL2 REQUIRED)
 endif()
 
 link_directories(${PROJECT_SOURCE_DIR}/includes)
