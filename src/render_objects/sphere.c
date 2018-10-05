@@ -7,7 +7,7 @@
 t_sphere *new_sphere(t_vec3 pos, double radius, t_material material) {
 	t_sphere *s;
 
-	s = malloc(sizeof(t_vec3) + sizeof(double) + sizeof(t_sphere *));
+	s = malloc(sizeof(t_vec3) + sizeof(double) + sizeof(t_material) + 10);
 	s->radius = radius;
 	s->center = pos;
 	s->material = material;

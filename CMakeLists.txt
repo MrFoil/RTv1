@@ -7,10 +7,6 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 #set(SDL2_PATH ${PROJECT_SOURCE_DIR}/Library/bin)
 
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-
-find_package(SDL2 REQUIRED)
-
 include_directories(${PROJECT_SOURCE_DIR}/Library/include)
 
 endif()
@@ -86,13 +82,19 @@ set(SOURCE_FILES src/main.c includes/rtv1.h
 
 add_executable(RTv1 ${SOURCE_FILES} ${LIBFT_FILES})
 
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
+find_package(SDL2 REQUIRED)
+
 if (WIN32)
     target_link_libraries(RTv1 ${SDL2_LIBRARY} -lm)
 endif ()
 
-if (UNIX)
-
+if(APPLE)
     find_package(SDL2 REQUIRED)
-
+    include_directories(${SDL2_INCLUDE_DIR})
+    target_link_libraries(RTv1 ${SDL2_LIBRARY} -lm)
+elseif(UNIX)
+    find_package(SDL2 REQUIRED)
     target_link_libraries(RTv1 -lm -lSDL2)
 endif()

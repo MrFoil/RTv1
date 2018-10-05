@@ -40,7 +40,7 @@ int		main(int argc, char *args[]) {
 		return 1;
 	}
 
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 
 //    screenSurface = SDL_GetWindowSurface(window);
 //    SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xA0, 0x06, 0xFF));
@@ -113,12 +113,13 @@ t_vec3	color_by_material(const t_ray r, t_list *list, int depth)
 	}
 }
 
-void	add_sphere_to_world(t_sphere *sphere, t_list **world)
+t_list	*add_sphere_to_world(t_sphere *sphere, t_list *world)
 {
-	if (!*world)
-		*world = ft_lstnew(sphere, sizeof(t_sphere));
+	if (!world)
+		world = ft_lstnew(sphere, sizeof(t_vec3) + sizeof(double) + sizeof(t_material) + 10);
 	else
-		ft_lstadd_end(world, ft_lstnew(sphere, sizeof(t_sphere)));
+		ft_lstadd_end(&world, ft_lstnew(sphere, sizeof(t_vec3) + sizeof(double) + sizeof(t_material) + 10));
+    return world;
 }
 
 void	draw_scene(SDL_Renderer *renderer){
@@ -135,12 +136,13 @@ void	draw_scene(SDL_Renderer *renderer){
 	antialiasingX = 8;
 	camera = new_camera(vec(-2, 2, 1), vec(0, 0, -1), vec(0, -1, 0), 60, (float)nx / (float)ny);
 
-	add_sphere_to_world(new_sphere(vec(0, 0, -1), 0.5, new_material(0, vec(0.1, 0.2, 0.5), "lambertian")), &world);
-	add_sphere_to_world(new_sphere(vec(0, -100.5, -1), 100, new_material(0, vec(0.8, 0.2, 0.5), "metal")), &world);
-	add_sphere_to_world(new_sphere(vec(1, 0, -1), 0.5, new_material(0, vec(1, 0.4, 0.6), "metal")), &world);
-	add_sphere_to_world(new_sphere(vec(2, 0, -1), 0.5, new_material(0, vec(0.85, 0.26, 1), "lambertian")), &world);
-	add_sphere_to_world(new_sphere(vec(-1, 0, -1), 0.5, new_material(1.5, vec(1, 0.5, 0.9), "dielectric")), &world);
-	add_sphere_to_world(new_sphere(vec(-1, 0, -1), -0.45, new_material(1.5, vec(0, 0, 0), "dielectric")), &world);
+	world = add_sphere_to_world(new_sphere(vec(0, 0, -1), 0.5, new_material(0, vec(0.1, 0.2, 0.5), "lambertian")), world);
+	world = add_sphere_to_world(new_sphere(vec(0, -100.5, -1), 100, new_material(0, vec(0.8, 0.8, 0.8), "lambertian")), world);
+	world = add_sphere_to_world(new_sphere(vec(0, 0, -4), 1, new_material(0, vec(0.6, 0.6, 1.0), "metal")), world);
+	world = add_sphere_to_world(new_sphere(vec(1, 0, -1), 0.5, new_material(0, vec(1, 0.4, 0.6), "metal")), world);
+	world = add_sphere_to_world(new_sphere(vec(2, 0, -1), 0.5, new_material(0, vec(0.85, 0.26, 1), "lambertian")), world);
+	world = add_sphere_to_world(new_sphere(vec(-1, 0, -1), 0.5, new_material(1.5, vec(1, 0.5, 0.9), "dielectric")), world);
+	world = add_sphere_to_world(new_sphere(vec(-1, 0, -1), -0.45, new_material(1.5, vec(0, 0, 0), "dielectric")), world);
 
 
 
