@@ -52,7 +52,7 @@ int		main(int argc, char *args[]) {
 	SDL_Event event;
 
 	draw_scene(renderer);
-
+//	system("sudo leaks RTv1 | grep \"Process\"");
 	int quit = 0;
 
 	while (!quit) {
@@ -113,13 +113,45 @@ t_vec3	color_by_material(const t_ray r, t_list *list, int depth)
 	}
 }
 
-t_list	*add_sphere_to_world(t_sphere *sphere, t_list *world)
+t_list	*add_sphere_to_world(t_sphere **spheres, t_list *world)
 {
-	if (!world)
-		world = ft_lstnew(sphere, sizeof(t_vec3) + sizeof(double) + sizeof(t_material) + 10);
-	else
-		ft_lstadd_end(&world, ft_lstnew(sphere, sizeof(t_vec3) + sizeof(double) + sizeof(t_material) + 10));
-    return world;
+	while(*spheres)
+	{
+		if (!world)
+			world = ft_lstnew(*spheres, sizeof(t_vec3) + sizeof(double) + sizeof(t_material) + 10);
+		else
+			ft_lstadd_end(&world, ft_lstnew(*spheres, sizeof(t_vec3) + sizeof(double) + sizeof(t_material) + 10));
+		spheres++;
+	}
+
+	return (world);
+}
+
+
+//TODO: Read file with all objects and place their to similar array
+t_sphere	**all_spheres()
+{
+	size_t		col;
+	t_sphere	**spheres;
+
+	col = 7;
+	spheres = malloc(sizeof(t_sphere *) * col);
+	spheres[col] = NULL;
+	spheres[0] = new_sphere(vec(0, 0, -1), 0.5, new_material(0, vec(0.1, 0.2, 0.5), "lambertian"));
+	spheres[1] = new_sphere(vec(0, -100.5, -1), 100, new_material(0, vec(0.8, 0.8, 0.8), "lambertian"));
+	spheres[2] = new_sphere(vec(0, 0, -4), 1, new_material(0, vec(0.6, 0.6, 1.0), "metal"));
+	spheres[3] = new_sphere(vec(1, 0, -1), 0.5, new_material(0, vec(1, 0.4, 0.6), "metal"));
+	spheres[4] = new_sphere(vec(2, 0, -1), 0.5, new_material(0, vec(0.85, 0.26, 1), "lambertian"));
+	spheres[5] = new_sphere(vec(-1, 0, -1), 0.5, new_material(1.5, vec(1, 0.5, 0.9), "dielectric"));
+	spheres[6] = new_sphere(vec(-1, 0, -1), -0.45, new_material(1.5, vec(1, 0.5, 0.9), "dielectric"));
+
+	return (spheres);
+}
+
+
+void	delSphere(void *sphere, size_t y)
+{
+	ft_memdel(&sphere);
 }
 
 void	draw_scene(SDL_Renderer *renderer){
@@ -136,15 +168,9 @@ void	draw_scene(SDL_Renderer *renderer){
 	antialiasingX = 8;
 	camera = new_camera(vec(-2, 2, 1), vec(0, 0, -1), vec(0, -1, 0), 60, (float)nx / (float)ny);
 
-	world = add_sphere_to_world(new_sphere(vec(0, 0, -1), 0.5, new_material(0, vec(0.1, 0.2, 0.5), "lambertian")), world);
-	world = add_sphere_to_world(new_sphere(vec(0, -100.5, -1), 100, new_material(0, vec(0.8, 0.8, 0.8), "lambertian")), world);
-	world = add_sphere_to_world(new_sphere(vec(0, 0, -4), 1, new_material(0, vec(0.6, 0.6, 1.0), "metal")), world);
-	world = add_sphere_to_world(new_sphere(vec(1, 0, -1), 0.5, new_material(0, vec(1, 0.4, 0.6), "metal")), world);
-	world = add_sphere_to_world(new_sphere(vec(2, 0, -1), 0.5, new_material(0, vec(0.85, 0.26, 1), "lambertian")), world);
-	world = add_sphere_to_world(new_sphere(vec(-1, 0, -1), 0.5, new_material(1.5, vec(1, 0.5, 0.9), "dielectric")), world);
-	world = add_sphere_to_world(new_sphere(vec(-1, 0, -1), -0.45, new_material(1.5, vec(0, 0, 0), "dielectric")), world);
 
-
+	t_sphere **spheres = all_spheres();
+	world = add_sphere_to_world(spheres, world);
 
 	t_vec3 col;
 
@@ -167,4 +193,14 @@ void	draw_scene(SDL_Renderer *renderer){
 		SDL_RenderPresent(renderer);
 	}
 
+	//CLEARING ALLOCATED MEMORY
+	ft_lstdel(&world, delSphere);
+	int n = 0;
+	while (spheres[n])
+	{
+		ft_memdel(&spheres[n]);
+		n++;
+	}
+	ft_memdel(&spheres);
+	//GRATZ LEAKS = 0
 }

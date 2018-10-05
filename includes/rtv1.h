@@ -13,6 +13,7 @@
 #ifndef RTV1_H
 # define RTV1_H
 # include "vector_math.h"
+# include <SDL.h>
 # include <SDL2/SDL.h>
 # include <math.h>
 # include "libft.h"
