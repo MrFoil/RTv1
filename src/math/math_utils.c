@@ -4,7 +4,7 @@
 
 #include "vector_math.h"
 
-double randfrom(double min, double max)
+float randfrom(double min, double max)
 {
 	double range = (max - min);
 	double div = RAND_MAX / range;

@@ -78,7 +78,7 @@ set(SOURCE_FILES src/main.c includes/rtv1.h
         src/ray.c
         src/material_scatters.c
         src/math/math_utils.c
-        src/render_objects/sphere.c src/to_libft/ft_lstadd_end.c)
+        src/render_objects/sphere.c src/to_libft/ft_lstadd_end.c src/render_objects/cube.c)
 
 add_executable(RTv1 ${SOURCE_FILES} ${LIBFT_FILES})
 

@@ -76,7 +76,7 @@ t_camera		new_camera(t_vec3 lookfrom, t_vec3 lookat, t_vec3 vup, float vfov, flo
 t_sphere		*new_sphere(t_vec3 pos, double radius, t_material material);
 
 bool			sphere_hit(t_ray ray, double t_min, double t_max, t_hit_record *rec, t_sphere *s);
-double			randfrom(double min, double max);
+float			randfrom(double min, double max);
 t_vec3			point_at_parameter(t_ray r, double t);
 t_ray			get_ray(t_camera c, double u, double v);
 bool			list_hit(t_ray ray, double d_min, double d_max, t_hit_record *rec, t_list *list);

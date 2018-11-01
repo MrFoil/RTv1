@@ -15,6 +15,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
+#include <dns_util.h>
+
+void		draw_world(t_camera camera, t_list *world, int antialiasingX, SDL_Renderer *renderer);
+void		random_scene(SDL_Renderer *renderer);
+
 
 void		draw_scene(SDL_Renderer *renderer);
 
@@ -51,7 +56,8 @@ int		main(int argc, char *args[]) {
 
 	SDL_Event event;
 
-	draw_scene(renderer);
+	random_scene(renderer);
+//	draw_scene(renderer);
 //	system("sudo leaks RTv1 | grep \"Process\"");
 	int quit = 0;
 
@@ -166,7 +172,7 @@ void	draw_scene(SDL_Renderer *renderer){
 	ny = HEIGHT;
 	nx = WIDTH;
 	antialiasingX = 8;
-	camera = new_camera(vec(-2, 2, 1), vec(0, 0, -1), vec(0, -1, 0), 60, (float)nx / (float)ny);
+	camera = new_camera(vec(-2, 2, 1), vec(0, 0, -1), vec(0, -1, 0), 20, (float)nx / (float)ny);
 
 
 	t_sphere **spheres = all_spheres();
@@ -178,8 +184,8 @@ void	draw_scene(SDL_Renderer *renderer){
 		for (int i = 0; i < nx; i++) {
 			col = vec(0, 0, 0);
 			for (int k = 0; k < antialiasingX ; k++) {
-				double u = ((double)i + randfrom(0, 1)) / (double)nx;
-				double v = ((double)j + randfrom(0, 1)) / (double)ny;
+				double u = ((double)i + drand48()) / (double)nx;
+				double v = ((double)j + drand48()) / (double)ny;
 				t_ray ray = get_ray(camera, u, v); /*ray for current coordinates*/
 				col = vec_plus(col,color_by_material(ray, world, 0));
 			}
@@ -198,9 +204,103 @@ void	draw_scene(SDL_Renderer *renderer){
 	int n = 0;
 	while (spheres[n])
 	{
-		ft_memdel(&spheres[n]);
+		ft_memdel((void **)&spheres[n]);
 		n++;
 	}
-	ft_memdel(&spheres);
+	ft_memdel((void **)&spheres);
+	//GRATZ LEAKS = 0
+}
+
+float	ft_drand48(){
+	float range = (1 - 0);
+	float div = RAND_MAX / range;
+	return 0 + (rand() / div);
+}
+
+void		draw_world(t_camera camera, t_list *world, int antialiasingX, SDL_Renderer *renderer){
+	int			nx;
+	int			ny;
+
+	ny = HEIGHT;
+	nx = WIDTH;
+	t_vec3 col;
+	for (int j = ny -1; j >= 0 ; j--) {
+		for (int i = 0; i < nx; i++) {
+			col = vec(0, 0, 0);
+			for (int k = 0; k < antialiasingX ; k++) {
+				double u = ((double)i + drand48()) / (double)nx;
+				double v = ((double)j + drand48()) / (double)ny;
+				t_ray ray = get_ray(camera, u, v); /*ray for current coordinates*/
+				col = vec_plus(col,color_by_material(ray, world, 0));
+			}
+			col = vec_division_scalar(col, (double)antialiasingX);
+			col = vec(sqrt(col.x), sqrt(col.y), sqrt(col.z));
+			t_vec3 draw = vec_mult_scalar(col, 255.99);
+
+			SDL_SetRenderDrawColor(renderer, (Uint8)draw.x, (Uint8)draw.y, (Uint8)draw.z, SDL_ALPHA_OPAQUE);
+			SDL_RenderDrawPoint(renderer, i, j);
+		}
+		SDL_RenderPresent(renderer);
+	}
+
+}
+
+void		random_scene(SDL_Renderer *renderer)
+{
+	int			n = 500;
+	t_list		*world;
+	t_sphere	**spheres;
+	spheres = malloc(sizeof(t_sphere *) * n);
+	spheres[n] = NULL;
+	spheres[0] = new_sphere(vec(0, -1000, 0), 1000, new_material(0, vec(0.5, 0.5, 0.5), "lambertian"));
+	int i = 1;
+	t_vec3	center;
+	float	choose_mat;
+	for (int a = -6; a < 6; a++)
+	{
+		for (int b = -6; b < 6; b++)
+		{
+			choose_mat = ft_drand48();
+			center = vec(a + 0.9 * ft_drand48(), 0.2, b + 0.9 * ft_drand48());
+			if (vec_length(vec_minus(center, vec(4, 0.2, 0))) > 0.9)
+			{
+				if (choose_mat < 0.8) // diffuse
+				{
+					spheres[i++] = new_sphere(center, 0.2,
+							new_material(0, vec(drand48() * drand48(), drand48() * drand48(), drand48() * drand48()), "lambertian"));
+				}
+				else if (choose_mat < 0.95) // metal
+				{
+					spheres[i++] = new_sphere(center, 0.2,
+							new_material(0, vec(0.5 * (1 + drand48()), 0.5 * (1 + drand48()), 0.5 * (1 + drand48())), "metal"));
+				}
+				else // glass
+				{
+					spheres[i++] = new_sphere(center, 0.2,
+							new_material(1.5, vec(0, 0, 0), "dielectric"));
+				}
+			}
+		}
+	}
+
+	spheres[i++] = new_sphere(vec(0, 1, 0), 1.0 , new_material(1.5, vec(0, 0, 0), "dielectric"));
+	spheres[i++] = new_sphere(vec(-4, 1, 0), 1.0 , new_material(0, vec(0.4, 0.2, 0.1), "lambertian"));
+	spheres[i++] = new_sphere(vec(4, 1, 0), 1.0 , new_material(0, vec(0.7, 0.6, 0.5), "metal"));
+	spheres[i] = NULL;
+	world = add_sphere_to_world(spheres, world);
+	t_camera camera = new_camera(vec(13, 5, 3), vec(0, 0, 0), vec(0, -1, 0), 30, (float)WIDTH / (float)HEIGHT);
+
+	draw_world(camera, world, 16, renderer);
+
+
+	//CLEARING ALLOCATED MEMORY
+	ft_lstdel(&world, delSphere);
+	n = 0;
+	while (spheres[n])
+	{
+		ft_memdel((void **)&spheres[n]);
+		n++;
+	}
+	ft_memdel((void **)&spheres);
 	//GRATZ LEAKS = 0
 }
